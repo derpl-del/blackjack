@@ -8,11 +8,9 @@ import (
 
 //Cards Struct
 type Cards struct {
-	value int
-	name  string
+	Value int    `json:"value"`
+	Name  string `json:"name"`
 }
-
-var card Cards
 
 //Deck type list of cards
 type Deck []Cards
@@ -21,17 +19,17 @@ type Deck []Cards
 func GenerateCard() Deck {
 	decks := Deck{}
 	CardSuits := []string{"Spades", "Hearts", "Diamonds", "Clubs"}
-	CardValue := []string{"One", "Two", "Tree", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King"}
+	CardValue := []string{"Ace", "Two", "Tree", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King"}
 	value := 0
 	for _, suit := range CardSuits {
 		for i, values := range CardValue {
-			if i > 11 {
+			if i+1 > 11 {
 				value = 10
 			} else {
-				value = i
+				value = i + 1
 			}
 			name := suit + " " + values
-			card = Cards{value: value, name: name}
+			card := Cards{Name: name, Value: value}
 			decks = append(decks, card)
 		}
 	}
@@ -53,6 +51,9 @@ func (d Deck) PrintDeck() {
 }
 
 //DrawCard for Print list of Card in Deck
-func DrawCard(d Deck) (Deck, Deck) {
-	return d[:1], d[1:]
+func DrawCard(h Deck, d Deck, num int) (Deck, Deck) {
+	h = append(h, d[:num]...)
+	d = append(d[:0], d[num:]...)
+	//d[len(d)-1], d[0] = d[0], d[len(d)-1]
+	return h, d
 }
