@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/derpl-del/blackjack/code/gocode"
 	"github.com/derpl-del/blackjack/code/page"
@@ -25,6 +26,11 @@ func CallController() {
 	r.HandleFunc("/api/v1/ViewDealer", gocode.ViewDealer).Methods("GET")
 	r.HandleFunc("/api/v1/ViewResult", gocode.ViewResult).Methods("GET")
 	r.PathPrefix("/env/").Handler(http.StripPrefix("/env/", http.FileServer(http.Dir("env"))))
-	fmt.Println("server started at localhost:9000")
-	http.ListenAndServe(":9000", r)
+	//fmt.Println("server started at localhost:9000")
+	port := os.Getenv("PORT")
+	if len(port) == 0 {
+		port = "9000"
+	}
+	fmt.Println("server started at localhost:" + port)
+	http.ListenAndServe(":"+port, r)
 }
