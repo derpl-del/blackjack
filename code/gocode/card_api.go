@@ -2,7 +2,6 @@ package gocode
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/derpl-del/blackjack/code/card"
@@ -20,6 +19,19 @@ type Response struct {
 	Winner      string `json:"winner"`
 }
 
+//ResponseGenerator struct
+type ResponseGenerator struct {
+	UserHand   card.Deck `json:"user_hand"`
+	DealerHand card.Deck `json:"dealer_hand"`
+}
+
+//ResponseResultDraw struct
+type ResponseResultDraw struct {
+	Status string `json:"status"`
+	Card   string `json:"card"`
+	Value  int    `json:"value"`
+}
+
 //CardDeckGenerator Func
 func CardDeckGenerator(w http.ResponseWriter, r *http.Request) {
 	deckPointer := &deck
@@ -30,9 +42,9 @@ func CardDeckGenerator(w http.ResponseWriter, r *http.Request) {
 	*handPointer = card.Deck{}
 	*dealPointer = card.Deck{}
 	*handPointer, *deckPointer = card.DrawCard(hand, deck, 2)
-	*dealPointer, *deckPointer = card.DrawCard(deal, deck, 2)
-	fmt.Println(len(deck))
-	json.NewEncoder(w).Encode(deck)
+	*dealPointer, *deckPointer = card.DrawCard(deal, deck, 1)
+	res := ResponseGenerator{DealerHand: deal, UserHand: hand}
+	json.NewEncoder(w).Encode(res)
 }
 
 //CardDrawUser Func
@@ -71,10 +83,8 @@ func ViewResult(w http.ResponseWriter, r *http.Request) {
 	Dpoint := 0
 	Upoint := 0
 	var status string
-	var Uace bool
-	var Dace bool
-	Dace = false
-	Uace = false
+	Dace := false
+	Uace := false
 	for _, d := range deal {
 		if d.Value == 1 {
 			Dace = true
@@ -101,5 +111,30 @@ func ViewResult(w http.ResponseWriter, r *http.Request) {
 		status = "User Win"
 	}
 	res := Response{DealerValue: Dpoint, UserValue: Upoint, Winner: status}
+	json.NewEncoder(w).Encode(res)
+}
+
+//UserDrawResult Func
+func UserDrawResult(w http.ResponseWriter, r *http.Request) {
+	Upoint := 0
+	var status string
+	Uace := false
+	cards := hand[len(hand)-1].Name
+	value := hand[len(hand)-1].Value
+	for _, u := range hand {
+		if u.Value == 1 {
+			Uace = true
+		}
+		Upoint = Upoint + u.Value
+	}
+	if Uace == true && Upoint+10 <= 21 {
+		Upoint = Upoint + 10
+	}
+	if Upoint <= 21 {
+		status = "alive"
+	} else {
+		status = "burnout"
+	}
+	res := ResponseResultDraw{Card: cards, Status: status, Value: value}
 	json.NewEncoder(w).Encode(res)
 }
