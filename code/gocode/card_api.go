@@ -17,6 +17,8 @@ type Response struct {
 	UserValue   int    `json:"user_value"`
 	DealerValue int    `json:"dealer_value"`
 	Winner      string `json:"winner"`
+	UserScore   int    `json:"user_score"`
+	DealerScore int    `json:"dealer_score"`
 }
 
 //ResponseGenerator struct
@@ -30,6 +32,7 @@ type ResponseResultDraw struct {
 	Status string `json:"status"`
 	Card   string `json:"card"`
 	Value  int    `json:"value"`
+	Score  int    `json:"score"`
 }
 
 //CardDeckGenerator Func
@@ -52,7 +55,7 @@ func CardDrawUser(w http.ResponseWriter, r *http.Request) {
 	deckPointer := &deck
 	handPointer := &hand
 	*handPointer, *deckPointer = card.DrawCard(hand, deck, 1)
-	json.NewEncoder(w).Encode(deck)
+	json.NewEncoder(w).Encode(hand)
 }
 
 //CardDrawDealer Func
@@ -60,7 +63,7 @@ func CardDrawDealer(w http.ResponseWriter, r *http.Request) {
 	deckPointer := &deck
 	dealPointer := &deal
 	*dealPointer, *deckPointer = card.DrawCard(deal, deck, 1)
-	json.NewEncoder(w).Encode(deck)
+	json.NewEncoder(w).Encode(deal)
 }
 
 //ViewDeck Func
@@ -110,7 +113,7 @@ func ViewResult(w http.ResponseWriter, r *http.Request) {
 	} else {
 		status = "User Win"
 	}
-	res := Response{DealerValue: Dpoint, UserValue: Upoint, Winner: status}
+	res := Response{DealerValue: Dpoint, UserValue: Upoint, Winner: status, DealerScore: Dpoint, UserScore: Upoint}
 	json.NewEncoder(w).Encode(res)
 }
 
@@ -135,6 +138,31 @@ func UserDrawResult(w http.ResponseWriter, r *http.Request) {
 	} else {
 		status = "burnout"
 	}
-	res := ResponseResultDraw{Card: cards, Status: status, Value: value}
+	res := ResponseResultDraw{Card: cards, Status: status, Value: value, Score: Upoint}
+	json.NewEncoder(w).Encode(res)
+}
+
+//DealerDrawResult Func
+func DealerDrawResult(w http.ResponseWriter, r *http.Request) {
+	Dpoint := 0
+	var status string
+	Dace := false
+	cards := deal[len(deal)-1].Name
+	value := deal[len(deal)-1].Value
+	for _, u := range deal {
+		if u.Value == 1 {
+			Dace = true
+		}
+		Dpoint = Dpoint + u.Value
+	}
+	if Dace == true && Dpoint+10 <= 21 {
+		Dpoint = Dpoint + 10
+	}
+	if Dpoint <= 21 {
+		status = "alive"
+	} else {
+		status = "burnout"
+	}
+	res := ResponseResultDraw{Card: cards, Status: status, Value: value, Score: Dpoint}
 	json.NewEncoder(w).Encode(res)
 }

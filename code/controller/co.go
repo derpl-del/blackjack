@@ -23,6 +23,7 @@ func CallController() {
 	r.HandleFunc("/api/v1/ViewDeck", gocode.ViewDeck).Methods("GET")
 	r.HandleFunc("/api/v1/ViewHand", gocode.ViewHand).Methods("GET")
 	r.HandleFunc("/api/v1/UserDrawResult", gocode.UserDrawResult).Methods("GET")
+	r.HandleFunc("/api/v1/DealerDrawResult", gocode.DealerDrawResult).Methods("GET")
 	r.HandleFunc("/api/v1/ViewDealer", gocode.ViewDealer).Methods("GET")
 	r.HandleFunc("/api/v1/ViewResult", gocode.ViewResult).Methods("GET")
 	r.PathPrefix("/env/").Handler(http.StripPrefix("/env/", http.FileServer(http.Dir("env"))))
