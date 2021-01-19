@@ -61,19 +61,7 @@ $(document).ready(function () {
     $('.input-console').on('click', "#stand-btn", function () {
         $("#draw-btn").remove();
         $("#stand-btn").remove();
-        $.get("/api/v1/DrawCardDealer", function (data) {
-            var res = $.get("/api/v1/DealerDrawResult", function (data) {
-                var res = jQuery.parseJSON(data);
-                $(".dealer").append(`<div id="R${++Idx}" value="${res.value}">
-                 ${res.card}</div>`);
-                $(".dealer_score").text(res.score);
-                if (res.status == "burnout") {
-                    alert("player win");
-                    $(".input-console").append(`<button id="generate-btn">Play</button>`);
-                }
-                $(".input-console").append(`<button id="next-btn">Next</button>`);
-            });
-        });
+        $(".input-console").append(`<button id="next-btn">Next</button>`);
     });
 
     $('.input-console').on('click', "#next-btn", function () {
