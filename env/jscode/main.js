@@ -14,12 +14,22 @@ $(document).ready(function () {
             var res2 = jQuery.parseJSON(data);
             //console.log(res2)
             $.each(res2.user_hand, function (i, item) {
-                $(".user").append(`<div id="R${++Idx}" value="${item.value}">
-            ${item.name}</div>`);
+                var img = $(`<img id="R${++Idx}">`); //Equivalent: $(document.createElement('img'))
+                src = '/env/img/' + item.name + '.png'
+                img.attr('src', src);
+                img.attr('display', 'inline-block');
+                img.attr('width', '100');
+                img.attr('height', '136');
+                img.appendTo('.user');
             });
             $.each(res2.dealer_hand, function (i, item) {
-                $(".dealer").append(`<div id="R${++Idx}" value="${item.value}">
-            ${item.name}</div>`);
+                var img = $(`<img id="R${++Idx}">`); //Equivalent: $(document.createElement('img'))
+                src = '/env/img/' + item.name + '.png'
+                img.attr('src', src);
+                img.attr('display', 'inline-block');
+                img.attr('width', '100');
+                img.attr('height', '136');
+                img.appendTo('.dealer');
             });
         });
         $.get("/api/v1/ViewResult", function (data) {
@@ -45,8 +55,13 @@ $(document).ready(function () {
         $.get("/api/v1/DrawCardUser", function (data) {
             $.get("/api/v1/UserDrawResult", function (data) {
                 var res = jQuery.parseJSON(data);
-                $(".user").append(`<div id="R${++Idx}" value="${res.value}">
-                ${res.card}</div>`);
+                var img = $(`<img id="R${++Idx}">`); //Equivalent: $(document.createElement('img'))
+                src = '/env/img/' + res.card + '.png'
+                img.attr('src', src);
+                img.attr('display', 'inline-block');
+                img.attr('width', '100');
+                img.attr('height', '136');
+                img.appendTo('.user');
                 $(".user_score").text(res.score);
                 if (res.status == "burnout") {
                     alert(res.status);
@@ -90,8 +105,13 @@ $(document).ready(function () {
             $.get("/api/v1/DrawCardDealer", function (data) {
                 var res = $.get("/api/v1/DealerDrawResult", function (data) {
                     var res = jQuery.parseJSON(data);
-                    $(".dealer").append(`<div id="R${++Idx}" value="${res.value}">
-                 ${res.card}</div>`);
+                    var img = $(`<img id="R${++Idx}">`); //Equivalent: $(document.createElement('img'))
+                    src = '/env/img/' + res.card + '.png'
+                    img.attr('src', src);
+                    img.attr('display', 'inline-block');
+                    img.attr('width', '100');
+                    img.attr('height', '136');
+                    img.appendTo('.dealer');
                     $(".dealer_score").text(res.score);
                     if (res.status == "burnout") {
                         alert("player win");

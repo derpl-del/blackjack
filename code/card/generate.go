@@ -19,7 +19,7 @@ type Deck []Cards
 func GenerateCard() Deck {
 	decks := Deck{}
 	CardSuits := []string{"Spades", "Hearts", "Diamonds", "Clubs"}
-	CardValue := []string{"Ace", "Two", "Tree", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King"}
+	CardValue := []string{"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"}
 	value := 0
 	for _, suit := range CardSuits {
 		for i, values := range CardValue {
